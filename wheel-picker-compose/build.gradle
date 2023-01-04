@@ -52,13 +52,30 @@ dependencies {
 
 afterEvaluate {
     publishing{
+
+        def props = new Properties()
+        props.load(new FileInputStream(new File(rootProject.rootDir, "github.properties")))
+
+        def user = props.getProperty("gpr.user")
+        def key = props.getProperty("gpr.key")
+
+        repositories {
+            maven {
+                name = "GitHubPackages"
+                url = uri("https://maven.pkg.github.com/SuoxingTech/WheelPickerCompose")
+                credentials {
+                    username = user
+                    password = key
+                }
+            }
+        }
         publications {
             release(MavenPublication){
                 from components.release
 
-                groupId = 'com.github.commandiron'
+                groupId = 'dev.suoxing.tech'
                 artifactId = 'wheel-picker-compose'
-                version = '1.1.8-alpha'
+                version = '1.0.0'
             }
         }
     }
