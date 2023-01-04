@@ -1,6 +1,8 @@
 package com.commandiron.wheel_picker_compose.core
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.LocalOverscrollConfiguration
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
@@ -23,6 +25,7 @@ import dev.chrisbanes.snapper.rememberLazyListSnapperLayoutInfo
 import dev.chrisbanes.snapper.rememberSnapperFlingBehavior
 import kotlin.math.absoluteValue
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 internal fun WheelPicker(
     modifier: Modifier = Modifier,
@@ -58,39 +61,43 @@ internal fun WheelPicker(
                 border = selectorProperties.border().value
             ) {}
         }
-        LazyColumn(
-            modifier = Modifier
-                .height(size.height)
-                .width(size.width),
-            state = lazyListState,
-            contentPadding = PaddingValues(vertical = size.height / 3),
-            flingBehavior = rememberSnapperFlingBehavior(
-                lazyListState = lazyListState
-            )
-        ){
-            items(count){ index ->
-                val rotationX = calculateAnimatedRotationX(
-                    lazyListState = lazyListState,
-                    snapperLayoutInfo = snapperLayoutInfo,
-                    index = index
+        CompositionLocalProvider(
+            LocalOverscrollConfiguration provides null
+        ) {
+            LazyColumn(
+                modifier = Modifier
+                    .height(size.height)
+                    .width(size.width),
+                state = lazyListState,
+                contentPadding = PaddingValues(vertical = size.height / 3),
+                flingBehavior = rememberSnapperFlingBehavior(
+                    lazyListState = lazyListState
                 )
-                Box(
-                    modifier = Modifier
-                        .height(size.height / 3)
-                        .width(size.width)
-                        .alpha(
-                            calculateAnimatedAlpha(
-                                lazyListState = lazyListState,
-                                snapperLayoutInfo = snapperLayoutInfo,
-                                index = index
+            ){
+                items(count){ index ->
+                    val rotationX = calculateAnimatedRotationX(
+                        lazyListState = lazyListState,
+                        snapperLayoutInfo = snapperLayoutInfo,
+                        index = index
+                    )
+                    Box(
+                        modifier = Modifier
+                            .height(size.height / 3)
+                            .width(size.width)
+                            .alpha(
+                                calculateAnimatedAlpha(
+                                    lazyListState = lazyListState,
+                                    snapperLayoutInfo = snapperLayoutInfo,
+                                    index = index
+                                )
                             )
-                        )
-                        .graphicsLayer {
-                            this.rotationX = rotationX
-                        },
-                    contentAlignment = Alignment.Center
-                ) {
-                    content(index)
+                            .graphicsLayer {
+                                this.rotationX = rotationX
+                            },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        content(index)
+                    }
                 }
             }
         }
