@@ -22,7 +22,7 @@ fun WheelTextPicker(
     selectorProperties: SelectorProperties = WheelPickerDefaults.selectorProperties(),
     onScrollFinished: (snappedIndex: Int) -> Int? = { null },
 ) {
-    WheelTextPicker(
+    com.commandiron.wheel_picker_compose.core.WheelTextPicker(
         modifier,
         startIndex,
         size,

@@ -18,7 +18,7 @@ fun WheelPicker(
     onScrollFinished: (snappedIndex: Int) -> Int? = { null },
     content: @Composable LazyItemScope.(index: Int) -> Unit,
 ) {
-    WheelPicker(
+    com.commandiron.wheel_picker_compose.core.WheelPicker(
         modifier,
         startIndex,
         count,
