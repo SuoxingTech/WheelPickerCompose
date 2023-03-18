@@ -20,10 +20,12 @@ import java.time.temporal.ChronoUnit
 internal fun DefaultWheelDateTimePicker(
     modifier: Modifier = Modifier,
     startDateTime: LocalDateTime = LocalDateTime.now(),
+    minDateTime: LocalDateTime = LocalDateTime.MIN,
+    maxDateTime: LocalDateTime = LocalDateTime.MAX,
     yearsRange: IntRange? = IntRange(1922, 2122),
     timeFormat: TimeFormat = TimeFormat.HOUR_24,
-    backwardsDisabled: Boolean = false,
     size: DpSize = DpSize(256.dp, 128.dp),
+    rowCount: Int = 3,
     textStyle: TextStyle = MaterialTheme.typography.titleMedium,
     textColor: Color = LocalContentColor.current,
     selectorProperties: SelectorProperties = WheelPickerDefaults.selectorProperties(),
@@ -38,7 +40,7 @@ internal fun DefaultWheelDateTimePicker(
         if(selectorProperties.enabled().value){
             Surface(
                 modifier = Modifier
-                    .size(size.width, size.height / 3),
+                    .size(size.width, size.height / rowCount),
                 shape = selectorProperties.shape().value,
                 color = selectorProperties.color().value,
                 border = selectorProperties.border().value
@@ -49,11 +51,11 @@ internal fun DefaultWheelDateTimePicker(
             DefaultWheelDatePicker(
                 startDate = startDateTime.toLocalDate(),
                 yearsRange = yearsRange,
-                backwardsDisabled = false,
                 size = DpSize(
                     width = if(yearsRange == null ) size.width * 3 / 6 else size.width * 3 / 5 ,
                     height = size.height
                 ),
+                rowCount = rowCount,
                 textStyle = textStyle,
                 textColor = textColor,
                 selectorProperties = WheelPickerDefaults.selectorProperties(
@@ -73,13 +75,7 @@ internal fun DefaultWheelDateTimePicker(
                         }
                     }
 
-                    val isDateTimeBefore = isDateTimeBefore(newDateTime, startDateTime)
-
-                    if(backwardsDisabled) {
-                        if(!isDateTimeBefore) {
-                            snappedDateTime = newDateTime
-                        }
-                    } else {
+                    if(!newDateTime.isBefore(minDateTime) && !newDateTime.isAfter(maxDateTime)) {
                         snappedDateTime = newDateTime
                     }
 
@@ -103,11 +99,11 @@ internal fun DefaultWheelDateTimePicker(
             DefaultWheelTimePicker(
                 startTime = startDateTime.toLocalTime(),
                 timeFormat = timeFormat,
-                backwardsDisabled = false,
                 size = DpSize(
                     width = if(yearsRange == null ) size.width * 3 / 6  else size.width * 2 / 5 ,
                     height = size.height
                 ),
+                rowCount = rowCount,
                 textStyle = textStyle,
                 textColor = textColor,
                 selectorProperties = WheelPickerDefaults.selectorProperties(
@@ -124,13 +120,7 @@ internal fun DefaultWheelDateTimePicker(
                         }
                     }
 
-                    val isDateTimeBefore = isDateTimeBefore(newDateTime, startDateTime)
-
-                    if(backwardsDisabled) {
-                        if(!isDateTimeBefore) {
-                            snappedDateTime = newDateTime
-                        }
-                    } else {
+                    if(!newDateTime.isBefore(minDateTime) && !newDateTime.isAfter(maxDateTime)) {
                         snappedDateTime = newDateTime
                     }
 
@@ -149,10 +139,6 @@ internal fun DefaultWheelDateTimePicker(
             )
         }
     }
-}
-
-private fun isDateTimeBefore(date: LocalDateTime, currentDateTime: LocalDateTime): Boolean{
-    return date.isBefore(currentDateTime)
 }
 
 

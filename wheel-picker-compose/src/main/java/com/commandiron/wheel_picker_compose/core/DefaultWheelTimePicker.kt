@@ -21,9 +21,11 @@ import java.time.temporal.ChronoUnit
 internal fun DefaultWheelTimePicker(
     modifier: Modifier = Modifier,
     startTime: LocalTime = LocalTime.now(),
+    minTime: LocalTime = LocalTime.MIN,
+    maxTime: LocalTime = LocalTime.MAX,
     timeFormat: TimeFormat = TimeFormat.HOUR_24,
-    backwardsDisabled: Boolean = false,
     size: DpSize = DpSize(128.dp, 128.dp),
+    rowCount: Int = 3,
     textStyle: TextStyle = MaterialTheme.typography.titleMedium,
     textColor: Color = LocalContentColor.current,
     selectorProperties: SelectorProperties = WheelPickerDefaults.selectorProperties(),
@@ -77,7 +79,7 @@ internal fun DefaultWheelTimePicker(
     Box(modifier = modifier, contentAlignment = Alignment.Center){
         if(selectorProperties.enabled().value){
             Surface(
-                modifier = Modifier.size(size.width,size.height / 3),
+                modifier = Modifier.size(size.width,size.height / rowCount),
                 shape = selectorProperties.shape().value,
                 color = selectorProperties.color().value,
                 border = selectorProperties.border().value
@@ -91,6 +93,7 @@ internal fun DefaultWheelTimePicker(
                     height = size.height
                 ),
                 texts = if(timeFormat == TimeFormat.HOUR_24) hours.map { it.text } else amPmHours.map { it.text },
+                rowCount = rowCount,
                 style = textStyle,
                 color = textColor,
                 startIndex =  if(timeFormat == TimeFormat.HOUR_24) {
@@ -115,13 +118,7 @@ internal fun DefaultWheelTimePicker(
 
                         val newTime = snappedTime.withHour(newHour)
 
-                        val isTimeBefore = isTimeBefore(newTime, startTime)
-
-                        if (backwardsDisabled) {
-                            if (!isTimeBefore) {
-                                snappedTime = newTime
-                            }
-                        } else {
+                        if(!newTime.isBefore(minTime) && !newTime.isAfter(maxTime)) {
                             snappedTime = newTime
                         }
 
@@ -156,6 +153,7 @@ internal fun DefaultWheelTimePicker(
                     height = size.height
                 ),
                 texts = minutes.map { it.text },
+                rowCount = rowCount,
                 style = textStyle,
                 color = textColor,
                 startIndex = minutes.find { it.value == startTime.minute }?.index ?: 0,
@@ -180,13 +178,7 @@ internal fun DefaultWheelTimePicker(
                         newHour?.let {
                             val newTime = snappedTime.withMinute(newMinute).withHour(newHour)
 
-                            val isTimeBefore = isTimeBefore(newTime, startTime)
-
-                            if(backwardsDisabled){
-                                if(!isTimeBefore){
-                                    snappedTime = newTime
-                                }
-                            }else{
+                            if(!newTime.isBefore(minTime) && !newTime.isAfter(maxTime)) {
                                 snappedTime = newTime
                             }
 
@@ -215,6 +207,7 @@ internal fun DefaultWheelTimePicker(
                         height = size.height
                     ),
                     texts = amPms.map { it.text },
+                    rowCount = rowCount,
                     style = textStyle,
                     color = textColor,
                     startIndex = amPms.find { it.value == amPmValueFromTime(startTime) }?.index ?:0,
@@ -246,13 +239,7 @@ internal fun DefaultWheelTimePicker(
                         newMinute?.let {
                             val newTime = snappedTime.withMinute(newMinute).withHour(newHour)
 
-                            val isTimeBefore = isTimeBefore(newTime, startTime)
-
-                            if(backwardsDisabled){
-                                if(!isTimeBefore){
-                                    snappedTime = newTime
-                                }
-                            }else{
+                            if(!newTime.isBefore(minTime) && !newTime.isAfter(maxTime)) {
                                 snappedTime = newTime
                             }
 
@@ -296,10 +283,6 @@ internal fun DefaultWheelTimePicker(
             )
         }
     }
-}
-
-private fun isTimeBefore(time: LocalTime, currentTime: LocalTime): Boolean{
-    return time.isBefore(currentTime)
 }
 
 enum class TimeFormat {

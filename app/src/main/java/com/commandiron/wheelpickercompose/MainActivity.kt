@@ -42,19 +42,20 @@ class MainActivity : ComponentActivity() {
                         WheelDatePicker { snappedDate ->
                             println(snappedDate)
                         }
-                        WheelDateTimePicker(
-                            timeFormat = TimeFormat.AM_PM
-                        ) { snappedDateTime ->
+                        WheelDateTimePicker { snappedDateTime ->
                             println(snappedDateTime)
                         }
                         WheelDateTimePicker(
                             startDateTime = LocalDateTime.of(
-                                2025, 10, 30, 5, 0
+                                2025, 10, 20, 5, 30
                             ),
-                            yearsRange = null,
-                            backwardsDisabled = true,
+                            minDateTime = LocalDateTime.now(),
+                            maxDateTime = LocalDateTime.of(
+                                2025, 10, 20, 5, 30
+                            ),
                             timeFormat = TimeFormat.AM_PM,
                             size = DpSize(200.dp, 100.dp),
+                            rowCount = 5,
                             textStyle = MaterialTheme.typography.titleSmall,
                             textColor = Color(0xFFffc300),
                             selectorProperties = WheelPickerDefaults.selectorProperties(

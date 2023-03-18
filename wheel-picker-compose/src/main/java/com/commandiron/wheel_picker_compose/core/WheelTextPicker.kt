@@ -11,11 +11,12 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 
 @Composable
-internal fun WheelTextPicker(
+fun WheelTextPicker(
     modifier: Modifier = Modifier,
     startIndex: Int = 0,
     size: DpSize = DpSize(128.dp, 128.dp),
     texts: List<String>,
+    rowCount: Int,
     style: TextStyle = MaterialTheme.typography.titleMedium,
     color: Color = LocalContentColor.current,
     selectorProperties: SelectorProperties = WheelPickerDefaults.selectorProperties(),
@@ -26,6 +27,7 @@ internal fun WheelTextPicker(
         startIndex = startIndex,
         size = size,
         count = texts.size,
+        rowCount = rowCount,
         selectorProperties = selectorProperties,
         onScrollFinished = onScrollFinished
     ){ index ->
