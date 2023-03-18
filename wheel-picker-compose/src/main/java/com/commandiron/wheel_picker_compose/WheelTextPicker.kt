@@ -17,7 +17,7 @@ fun WheelTextPicker(
     startIndex: Int = 0,
     size: DpSize = DpSize(128.dp, 128.dp),
     texts: List<String>,
-    rowCount: Int,
+    rowCount: Int = 3,
     style: TextStyle = MaterialTheme.typography.titleMedium,
     color: Color = LocalContentColor.current,
     selectorProperties: SelectorProperties = WheelPickerDefaults.selectorProperties(),
